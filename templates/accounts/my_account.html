@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block content %}
+<section style="min-height: 70vh; padding-top: 10rem; background: #f7f7f7;">
+    <div style="max-width: 650px; margin: auto;">
+
+        <!-- Welcome -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <i class="fas fa-user-circle" style="font-size: 4rem; color: var(--main-color);"></i>
+            <h2 style="font-size: 2rem; margin-top: 0.5rem;">Welcome, {{ user.username }}!</h2>
+        </div>
+
+        <!-- Account Details Card -->
+        <div style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Account Details</h3>
+            <div id="account-info">
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email|default:"—" }}</p>
+                <p><strong>Date joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                <button id="edit-profile-btn" class="btn" style="font-size: 1.4rem; padding: 0.3rem 1rem;">Edit Profile</button>
+            </div>
+
+            <div id="edit-profile-form" style="display: none; margin-top: 1rem;">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="update_profile" value="1">
+                    <div style="margin-bottom: 1rem;">
+                        <label>Username:</label>
+                        <input type="text" name="username" value="{{ profile_form.username.value }}" class="form-control" style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;">
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <label>Email:</label>
+                        <input type="email" name="email" value="{{ profile_form.email.value }}" class="form-control" style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;">
+                    </div>
+                    <button type="submit" class="btn" style="font-size: 1.2rem; padding: 0.3rem 1rem;">Save Changes</button>
+                    <button type="button" id="cancel-edit-btn" class="btn" style="background: #ccc; margin-left: 0.5rem; font-size: 1.2rem; padding: 0.3rem 1rem;">Cancel</button>
+                </form>
+                {% if profile_form.errors %}
+                    <div style="color: red; margin-top: 0.5rem;">
+                        {% for field, errors in profile_form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Change Password Card -->
+        <div style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.5rem; margin-bottom: .5rem;">Change Password</h3>
+            <div id="password-info">
+                <p>Update your password regularly to keep your account secure.</p>
+                <button id="change-password-btn" class="btn" style="font-size: 1.3rem; padding: 0.3rem 1rem;margin-top: 1.8rem;">Change Password</button>
+            </div>
+
+            <div id="change-password-form" style="display: none; margin-top: 1rem;">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="change_password" value="1">
+                    {{ password_form.as_p }}
+                    <button type="submit" class="btn" style="font-size: 1.3rem; padding: 0.3rem 1rem;">Update Password</button>
+                    <button type="button" id="cancel-password-btn" class="btn" style="background: #ccc; margin-left: 0.5rem; font-size: 1.3rem; padding: 0.3rem 1rem;">Cancel</button>
+                </form>
+                {% if password_form.errors %}
+                    <div style="color: red; margin-top: 0.5rem;">
+                        {% for field, errors in password_form.errors.items %}
+                            {% for error in errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div style="background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 1.5rem;">
+            <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: #333;">Quick Links</h3>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                
+                <!-- My Cart -->
+                <a href="{% url 'cart' %}" style="flex: 1; min-width: 110px; text-decoration: none; color: #333; background: #fff; border: 3px solid #eee; border-radius: 12px; padding: 1.2rem 0.8rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.2s;"
+                onmouseover="this.style.borderColor='#333'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(232,67,147,0.1)';"
+                onmouseout="this.style.borderColor='#eee'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.03)';">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-shopping-cart"></i></div>
+                    <div style="font-weight: 500;">My Cart</div>
+                </a>
+                
+                <!-- My Wishlist -->
+                <a href="{% url 'wishlist' %}" style="flex: 1; min-width: 110px; text-decoration: none; color: #333; background: #fff; border: 3px solid #eee; border-radius: 12px; padding: 1.2rem 0.8rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.2s;"
+                onmouseover="this.style.borderColor='#333'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(232,67,147,0.1)';"
+                onmouseout="this.style.borderColor='#eee'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.03)';">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-heart"></i></div>
+                    <div style="font-weight: 500;">My Wishlist</div>
+                </a>
+                
+                <!-- My Orders -->
+                <a href="{% url 'my_orders' %}" style="flex: 1; min-width: 110px; text-decoration: none; color: #333; background: #fff; border: 3px solid #eee; border-radius: 12px; padding: 1.2rem 0.8rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.2s;"
+                onmouseover="this.style.borderColor='#333'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(232,67,147,0.1)';"
+                onmouseout="this.style.borderColor='#eee'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.03)';">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-box"></i></div>
+                    <div style="font-weight: 500;">My Orders</div>
+                </a>
+                
+                <!-- Logout -->
+                <a href="{% url 'logout' %}" style="flex: 1; min-width: 110px; text-decoration: none; color: #e84393; background: #fff; border: 3px solid #eee; border-radius: 12px; padding: 1.2rem 0.8rem; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); transition: all 0.2s;"
+                onmouseover="this.style.borderColor='#e84393'; this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(232,67,147,0.15)';"
+                onmouseout="this.style.borderColor='#eee'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.03)';">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i class="fas fa-sign-out-alt"></i></div>
+                    <div style="font-weight: 500;">Logout</div>
+                </a>
+                
+            </div>
+        </div>
+        </div>
+
+    </div>
+</section>
+
+<script>
+    // Edit Profile toggle
+    const editBtn = document.getElementById('edit-profile-btn');
+    const cancelEdit = document.getElementById('cancel-edit-btn');
+    const infoDiv = document.getElementById('account-info');
+    const formEdit = document.getElementById('edit-profile-form');
+
+    editBtn?.addEventListener('click', () => {
+        infoDiv.style.display = 'none';
+        formEdit.style.display = 'block';
+    });
+    cancelEdit?.addEventListener('click', () => {
+        infoDiv.style.display = 'block';
+        formEdit.style.display = 'none';
+    });
+    {% if profile_form.errors %}
+        infoDiv.style.display = 'none';
+        formEdit.style.display = 'block';
+    {% endif %}
+
+    // Change Password toggle
+    const passBtn = document.getElementById('change-password-btn');
+    const cancelPass = document.getElementById('cancel-password-btn');
+    const passInfo = document.getElementById('password-info');
+    const formPass = document.getElementById('change-password-form');
+
+    passBtn?.addEventListener('click', () => {
+        passInfo.style.display = 'none';
+        formPass.style.display = 'block';
+    });
+    cancelPass?.addEventListener('click', () => {
+        passInfo.style.display = 'block';
+        formPass.style.display = 'none';
+    });
+    {% if password_form.errors %}
+        passInfo.style.display = 'none';
+        formPass.style.display = 'block';
+    {% endif %}
+</script>
+{% endblock %}

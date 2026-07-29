@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="home" style="min-height: 70vh; padding-top: 12rem;">
+    <div class="content" style="max-width: 450px; margin: auto; text-align: center;">
+        <h1 style="font-size: 2.7rem; padding-bottom: 2rem;">Create Account</h1>
+        <form method="post" id="signup-form" autocomplete="off" novalidate>
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div style="text-align: left; margin-bottom: 1rem;">
+                <label for="id_username" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Username</label>
+                <input type="text" name="username" id="id_username"
+                       class="form-control"
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="off" value="{{ form.username.value|default:'' }}">
+                <!-- AJAX feedback -->
+                <span id="username-feedback" style="display: block; margin-top: 0.3rem;"></span>
+            </div>
+
+            <!-- Email -->
+            <div style="text-align: left; margin-bottom: 1rem;">
+                <label for="id_email" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Email</label>
+                <input type="email" name="email" id="id_email"
+                       class="form-control"
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="off" value="{{ form.email.value|default:'' }}">
+            </div>
+
+            <!-- Password -->
+            <div style="text-align: left; margin-bottom: 1rem; position: relative;">
+                <label for="id_password1" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Password</label>
+                <input type="password" name="password1" id="id_password1"
+                       class="form-control"
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="new-password" value="">
+                <!-- Eye icon for password1 -->
+                <span onclick="togglePassword('id_password1', 'eye-icon1')" style="position: absolute; right: 12px; top: 2.4rem; cursor: pointer; color: #666; font-size: 1.2rem;">
+                    <i class="far fa-eye" id="eye-icon1"></i>
+                </span>
+            </div>
+
+            <!-- Confirm Password -->
+            <div style="text-align: left; margin-bottom: 1.5rem; position: relative;">
+                <label for="id_password2" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Confirm Password</label>
+                <input type="password" name="password2" id="id_password2"
+                       class="form-control"
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="new-password" value="">
+                <!-- Eye icon for password2 -->
+                <span onclick="togglePassword('id_password2', 'eye-icon2')" style="position: absolute; right: 12px; top: 2.4rem; cursor: pointer; color: #666; font-size: 1.2rem;">
+                    <i class="far fa-eye" id="eye-icon2"></i>
+                </span>
+            </div>
+
+            <!-- General form errors (if any after POST) -->
+            {% if form.errors %}
+                <div style="color: red; margin-bottom: 1rem; text-align: left;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>• {{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <button type="submit" class="btn" style="width: 50%; margin-top: 1rem;">Sign Up</button>
+        </form>
+        <p style="margin-top: 1.5rem;">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+    </div>
+</section>
+
+<script>
+    function togglePassword(fieldId, iconId) {
+        const field = document.getElementById(fieldId);
+        const icon = document.getElementById(iconId);
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 4rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 2rem; align-items: center;">
+    
+    <!-- صورة المنتج -->
+    <div style="flex: 1;">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 8px; object-fit: cover;">
+        {% else %}
+            <img src="{% static 'images/default.jpg' %}" alt="{{ product.name }}" style="width: 100%; border-radius: 8px;">
+        {% endif %}
+    </div>
+
+    <!-- معلومات المنتج والوصف -->
+    <div style="flex: 1;">
+        <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 1rem;">{{ product.name }}</h1>
+        <div style="font-size: 1.8rem; color: #e74c3c; font-weight: bold; margin-bottom: 1rem;">${{ product.price }}</div>
+        
+        <!-- هنا يظهر الوصف الذي كتبته في لوحة التحكم -->
+        <p style="font-size: 1.1rem; color: #666; line-height: 1.6; margin-bottom: 2rem;">
+            {{ product.description }}
+        </p>
+
+        <a href="{% url 'home' %}" style="display: inline-block; background: #333; color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px;">Back to Home</a>
+    </div>
+
+</div>
+{% endblock %}

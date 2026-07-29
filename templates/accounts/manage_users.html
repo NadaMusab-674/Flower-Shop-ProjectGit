@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<section style="min-height:70vh; padding-top:10rem; background:#f9f9f9;">
+    <div class="content" style="max-width:1000px; margin:auto; background:#fff; padding:2rem; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,0.05);">
+        <h1 style="font-size: 1.7rem; margin-bottom:1.5rem;">All Users</h1>
+
+        <table style="width:100%; border-collapse:collapse; margin-bottom:2rem;">
+            <thead>
+                <tr style="background:var(--main-color); color:#fff;">
+                    <th style="padding:12px; text-align:left;">Username</th>
+                    <th style="padding:12px; text-align:left;">Email</th>
+                    <th style="padding:12px; text-align:center;">Staff</th>
+                    <th style="padding:12px; text-align:center;">Superuser</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:12px;">{{ u.username }}</td>
+                    <td style="padding:12px;">{{ u.email|default:"—" }}</td>
+                    <td style="padding:12px; text-align:center;">
+                        {% if u.is_staff %}✅{% else %}❌{% endif %}
+                    </td>
+                    <td style="padding:12px; text-align:center;">
+                        {% if u.is_superuser %}👑{% else %}—{% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding:20px; text-align:center;">No users found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{% url 'signup' %}" class="btn">➕ Add New User</a>
+    </div>
+</section>
+{% endblock %}

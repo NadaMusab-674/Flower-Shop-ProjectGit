@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="home" style="min-height: 70vh; padding-top: 12rem;">
+    <div class="content" style="max-width: 450px; margin: auto; text-align: center;">
+        <h1 style="font-size: 2.7rem; padding-bottom: 2rem;">Login</h1>
+        <form method="post" autocomplete="off" novalidate>
+            {% csrf_token %}
+            
+            <!-- Username -->
+            <div style="text-align: left; margin-bottom: 1.5rem;">
+                <label for="id_username" style="font-weight: 500; display: block; margin-bottom: 0rem;">Username</label>
+                <input type="text" name="username" id="id_username" 
+                       class="form-control" 
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="on" value="">
+            </div>
+            
+            <!-- Password -->
+            <div style="text-align: left; margin-bottom: 1.5rem; position: relative;">
+                <label for="id_password" style="font-weight: 500; display: block; margin-bottom: 0.3rem;">Password</label>
+                <input type="password" name="password" id="id_password" 
+                       class="form-control" 
+                       style="width: 100%; padding: 0.8rem; font-size: 0.8rem; border: 1px solid #ccc; border-radius: 0.5rem;"
+                       autocomplete="new-password" value="">
+
+                <span onclick="togglePassword()" style="position: absolute; right: 12px; top: 2.4rem; cursor: pointer; color: #666; font-size: 1.2rem;">
+                    <i class="far fa-eye" id="eye-icon"></i>
+                </span>
+            </div>
+            
+            <button type="submit" class="btn" style="width: 50%; margin-top: 1rem;">Sign In</button>
+        </form>
+        <p style="margin-top: 1.5rem;">Don't have an account? <a href="{% url 'signup' %}">Create one</a></p>
+    </div>
+</section>
+
+<script>
+    function togglePassword() {
+        const passwordField = document.getElementById('id_password');
+        const eyeIcon = document.getElementById('eye-icon');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="home" style="min-height: 70vh; padding-top: 12rem;">
+    <div class="content" style="max-width: 800px; margin: auto;">
+        <h1 style="font-size: 2.3rem; margin-top: -1rem; margin-bottom: 2rem;">My Wishlist</h1>
+        {% if items %}
+            {% for item in items %}
+            <div style="display: flex; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid #ddd; padding-bottom: 1rem;">
+                <img src="{% static item.image %}" alt="{{ item.name }}" style="width: 80px; height: 80px; object-fit: cover; margin-right: 1rem;">
+                <div style="flex: 1;">
+                    <h3>{{ item.name }}</h3>
+                    <p>Price: ${{ item.price }}</p>
+                </div>
+                <a href="#" class="btn remove-from-wishlist" data-product-id="{{ item.id }}" class="btn">Remove</a>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>Your wishlist is empty.</p>
+        {% endif %}
+        <a href="{% url 'home' %}" class="btn">Continue Shopping</a>
+    </div>
+</section>
+{% endblock %}
