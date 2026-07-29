@@ -25,13 +25,13 @@ def cart_view(request):
             prod = Product.objects.get(id=int(pid))
             subtotal = prod.price * qty
             items.append({
-                'id': prod.id,
-                'name': prod.name,
-                'price': prod.price,
-                'image': prod.image,
-                'quantity': qty,
-                'subtotal': subtotal,
-            })
+    'id': prod.id,
+    'name': prod.name,
+    'price': prod.price,
+    'image': prod.image.url if prod.image else '',  # <--- تعديل هنا بإضافة .url
+    'quantity': qty,
+    'subtotal': subtotal,
+})
             total += subtotal
         except Product.DoesNotExist:
             continue
