@@ -13,6 +13,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserUpdateForm
 from django.contrib.auth import logout as auth_logout
 from cart.models import Order
+from cart.models import Product
 
 def signup_view(request):
     if request.method == 'POST':
@@ -97,7 +98,7 @@ def is_admin(user):
 @user_passes_test(is_admin, login_url='login')
 def dashboard_view(request):
     context = {
-        'total_products': 0,   
+        'total_products': Product.objects.count(),   
         'total_orders': Order.objects.count(),
         'total_users': User.objects.count() if request.user.is_superuser else 0,
     }

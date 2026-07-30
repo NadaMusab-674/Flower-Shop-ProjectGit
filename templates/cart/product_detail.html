@@ -1,10 +1,9 @@
-{% extends 'base.html' %}
+[7/30/2026 10:00 PM] تيسير(تيسو♡): {% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div style="max-width: 900px; margin: 4rem auto; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 2rem; align-items: center;">
-    
-    <!-- صورة المنتج -->
+<div style="max-width: 900px; margin: 8rem auto 4rem; padding: 2rem; background: #fff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; gap: 2rem; align-items: center;">
+
     <div style="flex: 1;">
         {% if product.image %}
             <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 8px; object-fit: cover;">
@@ -13,18 +12,127 @@
         {% endif %}
     </div>
 
-    <!-- معلومات المنتج والوصف -->
     <div style="flex: 1;">
         <h1 style="font-size: 2.5rem; color: #333; margin-bottom: 1rem;">{{ product.name }}</h1>
-        <div style="font-size: 1.8rem; color: #e74c3c; font-weight: bold; margin-bottom: 1rem;">${{ product.price }}</div>
-        
-        <!-- هنا يظهر الوصف الذي كتبته في لوحة التحكم -->
+
+        <div style="margin-bottom: 1.5rem;">
+            {% if product.discount > 0 %}
+                
+            <span style="font-size: 1.2rem; color: #999; text-decoration: line-through; ">
+                ${{ product.get_original_price|floatformat:2 }}
+            </span>
+                <span style="font-size: 1.5rem; color: #e74c3c; font-weight: bold; margin-left: 0.5rem;">
+                    ${{ product.price|floatformat:2 }}
+                </span>
+            {% else %}
+                <span style="font-size: 1.5rem; color: #e74c3c; font-weight: bold;">
+                    ${{ product.price|floatformat:2 }}
+                </span>
+            {% endif %}
+        </div>
+
         <p style="font-size: 1.1rem; color: #666; line-height: 1.6; margin-bottom: 2rem;">
             {{ product.description }}
         </p>
 
-        <a href="{% url 'home' %}" style="display: inline-block; background: #333; color: #fff; padding: 0.8rem 1.5rem; text-decoration: none; border-radius: 5px;">Back to Home</a>
-    </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label for="quantity" style="font-weight: 500; display: block; margin-bottom: 0.5rem;">Quantity:</label>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <button type="button" onclick="changeQty(-1)" style="width: 40px; height: 40px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">−</button>
+                <input type="number" id="quantity" name="quantity" value="1" min="1" max="{{ product.stock }}" style="width: 70px; padding: 0.5rem; border: 1px solid #ccc; border-radius: 5px; text-align: center;" readonly>
+                <button type="button" onclick="changeQty(1)" style="width: 40px; height: 40px; background: #f0f0f0; border: 1px solid #ccc; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;">+</button>
+            </div>
+        </div>
 
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; align-items: center;">
+            <button class="btn add-to-cart" data-product-id="{{ product.id }}" style="padding: 0.8rem 1.5rem; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+
+            <button class="heart-icon btn" data-product-id="{{ product.id }}" style="background: #fff; color: {% if user.is_authenticated and product.id in liked_product_ids %}var(--main-color){% else %}#ccc{% endif %}; border: 1px solid {% if user.is_authenticated and product.id in liked_product_ids %}var(--main-color){% else %}#ccc{% endif %}; padding: 0.8rem; font-size: 1.2rem; cursor: pointer; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; transition: all 0.3s;"
+                    onmouseover="this.style.borderColor='var(--main-color)'; this.style.color='var(--main-color)';"
+                    onmouseout="if(!this.classList.contains('liked')){ this.style.borderColor='#ccc'; this.style.color='#ccc'; } else { this.style.borderColor='var(--main-color)'; this.style.color='var(--main-color)'; }">
+                <i class="{% if user.is_authenticated and product.id in liked_product_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+            </button>
+        </div>
+
+    </div>
 </div>
+
+<script>
+ function changeQty(delta) {
+        const qtyInput = document.getElementById('quantity');
+        let currentVal = parseInt(qtyInput.value)  1; 
+        let newVal = currentVal + delta;
+        
+        if (newVal < 1) {
+            newVal = 1;
+        }
+            qtyInput.value = newVal;
+    }
+
+    const addToCartBtn = document.querySelector('.add-to-cart');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const productId = this.dataset.productId;
+            const quantity = parseInt(document.getElementById('quantity').value)  1;
+            let cart = JSON.parse(localStorage.getItem('flowerCart'))  {};
+            cart[productId] = (cart[productId]  0) + quantity;
+            localStorage.setItem('flowerCart', JSON.stringify(cart));
+            const count = Object.values(cart).reduce((a, b) => a + b, 0);
+            const badge = document.getElementById('cart-count');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        });
+    }
+
+    const heartBtn = document.querySelector('.heart-icon');
+    if (heartBtn) {
+        heartBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if ("{{ user.is_authenticated }}" === "False") {
+                window.location.href = "{% url 'login' %}";
+                return;
+            }
+            const productId = parseInt(this.dataset.productId);
+            let wishlist = JSON.parse(localStorage.getItem('flowerWishlist')) || [];
+            const index = wishlist.indexOf(productId);
+            const icon = this.querySelector('i');
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                this.style.color = '#ccc';
+                this.style.borderColor = '#ccc';
+                if (icon) {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                }
+                this.classList.remove('liked');
+            } else {
+                wishlist.push(productId);
+                this.style.color = 'var(--main-color)';
+                this.style.borderColor = 'var(--main-color)';
+                if (icon) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                }
+                this.classList.add('liked');
+            }
+            localStorage.setItem('flowerWishlist', JSON.stringify(wishlist));
+        });
+    }
+</script>
+
+<style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 {% endblock %}
